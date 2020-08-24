@@ -1,0 +1,122 @@
+# Bir metni düzenlemek ya da metinden alt parçaları elde etmemize imkan sağlar.
+import re
+# Re kütüphanesiyle gelen bir kaç method :
+# Match(): Bu method verilen bir metin üzerinde belirtilmiş olan ifadeyi aramak ,
+# metin içeriğiyle eşleşip eşlemediğini bulmak için kullanılır fakat match methodu
+# karakter dizisinin yalnız en başına bakar.re.match(“aranacak_metin”,”aranan_yer”)
+# şeklinde belirtildiği üzere bir eşleşme sağlandığında eşleştirilen değerin hangi
+# indexler arasında olduğunu belirtir.
+text = "My name is Alexandra"
+print(re.match("My", text))
+print(re.match("is", text))
+print("---------------------")
+# sadece en baştakiler için eşleştirme yaptığından sonucu “none” olarak geri döndürür.
+# search methodu metnin tamamına bakar yani match() methodunda elde edilemeyen
+# sonuçlar match methodunda elde edilebilir.
+print(re.search("Alexandra", text))
+
+print("---------------------")
+# Findall(): Bu method ise search() methodu gibi metnin tamamında arama yapar ve
+# aranılan değeri kaç adet bulursa liste şeklinde geri döndürür.
+text2 = "hey hey hello hello ciao hey"
+print(re.findall("hello", text2))
+
+print("---------------------")
+# start()Bu method aratılan kelimenin, kaynakta nerede geçtiğini döndürür.
+text3 = re.search("molto", "Io parlo molto bene Italiano, tu?")
+print(text3.start())
+# end() aratılan kelime hangi aralıkta geçiyorsa onun son değerini döndürür.
+print(text3.end())
+
+print("---------------------")
+# endpos()Kaynak içerisindeki karakterlerin toplam sayısını döndürür. 
+# \n gibi satır atlatma karakterleri de sayılır.
+text4="Io imparo Italiano."
+kontrol=re.search("Io",text4)
+print(kontrol.endpos)
+print(text4[:19]) #Kontrol ettim ve doğru.
+
+# Bu modülü güçlü yapan şey metakarakterlerdir. Bu sayede belirlediğiniz bir düzene 
+# uyan metinleri arayabilirsiniz.
+
+print("---------------------")
+# . KarakteriYeni satır karakteri hariç herhangi tek bir karakterin yerini tutar.
+print(re.findall(".aman","O her zaman, saman altından su yürütürdü."))
+# zaman ve saman buldu. Çünkü herhangi bir karakter ile başlayıp aman ile devam eden bir şablon belirledik.
+
+print("---------------------")
+# * Karakteri Bir ifadenin bütün tekrarlanmalarını bulur.
+print(re.findall("@g*mail","test@mail.com test@gmail.com test@ggggmail.com"))
+# g harfinden sonra * koyduk, yani bu g karakteri 0 kere de geçebilir 100 kere de 
+# geçebilir. Bu ayrım sadece kendinden önceki harfi kapsıyor. Bu nedenle @mail, 
+# @gmail ve @ggggggmail döndü.
+
+print("---------------------")
+# + Karakteri
+# Kendinden önce gelen karakterin bir veya daha fazla kullanılmasını arar. 
+print(re.findall("@g+mail","test@mail.com test@gmail.com test@ggggmail.com"))
+# @gmail ve @ggggggmail döner. Çünkü g harfinden sonra + koyarak bu 
+# harfin 1 veya daha fazla geçmesi gerektiğini söyledik.
+
+print("---------------------")
+# [ ] KarakteriBu köşeli parantezler arasına yazılan bütün karakterler sorgulanır.
+print(re.findall("[ha]el","Hello ciao aelos harmful helpful hurt hitchking happy"))
+# h veya a ile başlayan sonrasında el ile devam eden bir şablon belirledik
+print(re.findall("s[ai]m[ei]t","Kardeşim samet, markete simit almaya gitti."))
+# s ile başlayan a veya i artı m ile devam eden, e veya i artı t ile biten sonuçlar
+# [A-Z] A’dan Z’ye tüm BÜYÜK harfler.
+# [a-z] A’dan Z’ye tüm küçük harfler.
+# [0-9] 0’dan 9’a tüm rakamlar.
+# [1-4] 1’den 4’e tüm rakamlar.
+
+
+print("---------------------")
+# { } Karakterleri
+# Belirli bir sayıda tekrar anlamındadır. 
+print(re.findall("[a-z]+a{2}t","Bence saat tamir etmek zor zanaat."))
+# [a-z]+a{2} ile a harfinden 2 adet olması gerektiğini belirttik.
+# [a-z]+a{2}t en son da t ile bitsin dedik.
+
+
+print("---------------------")
+# ^ Karakteri
+# İfadenin başlangıcını kontrol eder ve [ ] karakterleri ile birlikte 
+# kullanılırsa da hariç anlamına gelir.
+print(re.findall("^sesli","Oku oğul, sesli oku."))
+# ^sesli bir şey dönmedi,kaynak içerisinde bu metin var fakat başında değil.
+# Bu meta karakter sabit bir metin için kullanışlı gelmeyebilir. Çünkü zaten metnin 
+# başını gözle de görebiliyorsunuz, fakat bir listeyi for döngüsüne sokarak böyle bir 
+# metakarakter kullanılırsa çok faydalı olabilir. 
+
+
+print("---------------------")
+# $ metakarakteri ile de ifadenin sonunu yani ne ile bittiğini kontrol edebiliyoruz.
+metin = "Silikon vadisi, google.com ve apple.com arasındaki rekabeti tartışıyor. We love https://pythonprogramming.net"
+liste = metin.split()
+for i in liste:
+  sonuc = re.search("(.com|.net)$",i)
+  if sonuc:
+    print(sonuc.string)
+# Sonra bir for döngüsü ile her bir kelimenin .com veya .net ile bitip bitmediğini, 
+# eğer bitiyorsa ekrana yazmasını istedim
+
+print("---------------------")
+# \s ve \S İfadesi
+# Bu ifade kaynaktaki boşluğu yakalar.
+# Metin içinde kaç tane boşluk olduğunu görmek için 
+# \s ifadesini kullandım. Sonra len methodu ile adedini ekrana bastırdım.
+print(re.findall("\s","Bil bakalım kaç boşluk var."))
+print(len(re.findall("\s","Bil bakalım kaç boşluk var.")))
+
+print("---------------------")
+# \d ve \D İfadesi
+# Bu ifade kaynaktaki sayıyı yakalar. 
+print(re.findall("\d+","Gelirken 1 kilo yoğurt ve 2 adet ekmek alırsın."))
+# Sayı haricindekileri yakalayalım.
+print(re.findall("\D+","Gelirken 1 kilo yoğurt ve 2 adet ekmek alırsın."))
+
+print("---------------------")
+# \w vkaynaktaki karakter,sayı ve alt çizgiyi yakalar. 
+# \W  ise tam tersini yani boşluk, nokta, soru işareti, boşluk gibi karakterleri yakalar.
+print(re.findall("\w+","Mail adresin recepbl@hotmail.com mu?"))
+print(re.findall("\W+","Mail adresin recepbl@hotmail.com mu?"))
